@@ -16,7 +16,5 @@ public class Main {
 //        spectrum.shuffleOligos();
 
         spectrum.printOligos();
-
-
     }
 }

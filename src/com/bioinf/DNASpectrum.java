@@ -1,16 +1,12 @@
 package com.bioinf;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class DNASpectrum {
 
 	private String dna;
-	private Set<String> oligos = new HashSet<>();
-	private int [] oligosDuplication;
-	private String firstOligo;
+	private String firstOligo; // trzeba go zlokalizowac w hashmapie
+	private Map<String, Integer> oligosMap = new HashMap<>();
 
 	public DNASpectrum(String DNA) {
 		this.dna = DNA;
@@ -18,29 +14,14 @@ public class DNASpectrum {
 	}
 
 	/**
-	 * Cuts given DNA into oligos, process duplicates
-	 */
+	 * Cuts given DNA into oligos, count duplicates, shuffle order
+     */
 	public void cutDNAIntoOligos() {
 		int oligosNum = dna.length() - Main.OLIGOS_SIZE + 1;
 		for (int i = 0; i < oligosNum; i++) {
 			String oligo = dna.substring(i, i + Main.OLIGOS_SIZE);
-			if (oligos.add(oligo) == false) { // duplicate
-				//manage dups
-			}
+			oligosMap.merge(oligo, 1, Integer::sum);
 		}
-	}
-
-	/**
-	 * Sorts oligos alphabetically to simulate loosing initial order
-	 */
-//	public void shuffleOligos() {
-//		Collections.sort(oligos);
-//	}
-
-	public void processDuplicates() {
-		//find dups
-		//override array
-		//add info with num of dups
 	}
 
 	public String getDna() {
@@ -51,7 +32,6 @@ public class DNASpectrum {
 		this.dna = dna;
 	}
 
-
 	public String getFirstOligo() {
 		return firstOligo;
 	}
@@ -60,13 +40,11 @@ public class DNASpectrum {
 		this.firstOligo = firstOligo;
 	}
 
-	public Set<String> getOligos() {
-		return oligos;
-	}
+//	public Set<String> getOligos() {
+//		return oligos;
+//	}
 
 	public void printOligos() {
-		for (String o: oligos) {
-			System.out.print(o + ' ');
-		}
+		oligosMap.entrySet().forEach(entry -> System.out.println(entry.getKey() + " " + entry.getValue()));
 	}
 }
