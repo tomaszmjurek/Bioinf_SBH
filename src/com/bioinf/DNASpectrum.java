@@ -45,6 +45,6 @@ public class DNASpectrum {
 //	}
 
 	public void printOligos() {
-		oligosMap.entrySet().forEach(entry -> System.out.println(entry.getKey() + " " + entry.getValue()));
+		oligosMap.forEach((key, value) -> System.out.println(key + " " + value));
 	}
 }
