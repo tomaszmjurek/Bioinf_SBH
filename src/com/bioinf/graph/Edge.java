@@ -12,7 +12,7 @@ public class Edge {
 
 	public String toString() {
 		return  begin.getOligo() + " ---( "
-				+ Double.toString( weight ) + " )---> "
+				+ weight + " )---> "
 				+ end.getOligo();
 	}
 

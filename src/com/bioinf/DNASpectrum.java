@@ -5,12 +5,17 @@ import java.util.*;
 public class DNASpectrum {
 
 	private String dna;
-	private String firstOligo; // trzeba go zlokalizowac w hashmapie
+	public static String firstOligo; // trzeba go zlokalizowac w hashmapie
+
+	public Map<String, Integer> getOligosMap() {
+		return oligosMap;
+	}
+
 	private Map<String, Integer> oligosMap = new HashMap<>();
 
 	public DNASpectrum(String DNA) {
 		this.dna = DNA;
-		this.firstOligo = DNA.substring(0, 3);
+		this.firstOligo = DNA.substring(0, Main.OLIGOS_SIZE);
 	}
 
 	/**
@@ -32,17 +37,6 @@ public class DNASpectrum {
 		this.dna = dna;
 	}
 
-	public String getFirstOligo() {
-		return firstOligo;
-	}
-
-	public void setFirstOligo(String firstOligo) {
-		this.firstOligo = firstOligo;
-	}
-
-//	public Set<String> getOligos() {
-//		return oligos;
-//	}
 
 	public void printOligos() {
 		oligosMap.forEach((key, value) -> System.out.println(key + " " + value));
