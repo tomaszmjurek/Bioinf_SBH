@@ -18,10 +18,10 @@ public class Vertex {
 		if(edge.size() == 0)
 			return "";
 
-		String out = new String();
+		StringBuilder out = new StringBuilder();
 		for(Edge e : edge)
-			out = out + e.toString() + "\n";
-		return out;
+			out.append(e.toString()).append("\n");
+		return out.toString();
 	}
 
 	public String getOligo() {
@@ -32,8 +32,12 @@ public class Vertex {
 		return count;
 	}
 
-	public LinkedList<Edge> getEdge() {
-		return new LinkedList<Edge>(edge);
+	public LinkedList<Edge> getEdges() {
+		return new LinkedList<>(edge);
+	}
+
+	public Edge getEdge(int i) {
+		return edge.get(i);
 	}
 
 	public void addEdge(Edge e) {

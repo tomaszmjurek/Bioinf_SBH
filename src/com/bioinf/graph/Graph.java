@@ -9,6 +9,11 @@ import java.util.Map;
 public class Graph {
 	private LinkedList<Vertex> vertexes = new LinkedList<>(); // index musi sie pokrywac z Vertex.index
 	private int vertexCount;
+	private int startIndex;
+
+	public Graph() {
+		this.vertexCount = 0;
+	}
 
 	public int getStartIndex() {
 		return startIndex;
@@ -18,18 +23,12 @@ public class Graph {
 		return vertexes.get(startIndex);
 	}
 
-	private int startIndex;
-
-	public Graph() {
-		this.vertexCount = 0;
-	}
-
 	public void printGraph() {
-		String out = new String();
+		StringBuilder out = new StringBuilder();
 		for(Vertex v : vertexes)
-			if(v != null && v.toString() != "")
-				out = out + v.toString() + "\n";
-		System.out.println(out);
+			if(v != null && !"".equals(v.toString()))
+				out.append(v.toString()).append("\n");
+		System.out.println(out.toString());
 	}
 
 	// zwraca l.p.
@@ -48,7 +47,7 @@ public class Graph {
 	}
 
 	public LinkedList<Vertex> getVertexes() {
-		return new LinkedList<Vertex>(vertexes);
+		return new LinkedList<>(vertexes);
 	}
 
 	public void buildGraph(Map<String, Integer> oligos) {
@@ -75,8 +74,7 @@ public class Graph {
 	}
 
 	private boolean isFirstOligoIndex(int i) {
-		if (vertexes.get(i).getOligo().compareTo(DNASpectrum.firstOligo) == 0) return true;
-		return false;
+		return vertexes.get(i).getOligo().equals(DNASpectrum.firstOligo);
 	}
 
 	/**
@@ -85,9 +83,8 @@ public class Graph {
 	 * Another is prefix of the end vertex oligo
 	 */
 	private boolean hasSameSubstring(int begin, int beginVertexIndex, int endVertexIndex) {
-		if (vertexes.get(beginVertexIndex).getOligo().substring(begin, Main.OLIGOS_SIZE).compareTo(
-				vertexes.get(endVertexIndex).getOligo().substring(0, Main.OLIGOS_SIZE - begin)) == 0)
-			return true;
-		return false;
+		return vertexes.get(beginVertexIndex).getOligo().substring(begin, Main.OLIGOS_SIZE).equals(
+				vertexes.get(endVertexIndex).getOligo().substring(0, Main.OLIGOS_SIZE - begin));
 	}
+
 }

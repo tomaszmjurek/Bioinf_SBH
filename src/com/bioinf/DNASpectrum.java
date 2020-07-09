@@ -5,7 +5,7 @@ import java.util.*;
 public class DNASpectrum {
 
 	private String dna;
-	public static String firstOligo; // trzeba go zlokalizowac w hashmapie
+	public static String firstOligo;
 
 	public Map<String, Integer> getOligosMap() {
 		return oligosMap;
@@ -15,7 +15,7 @@ public class DNASpectrum {
 
 	public DNASpectrum(String DNA) {
 		this.dna = DNA;
-		this.firstOligo = DNA.substring(0, Main.OLIGOS_SIZE);
+		firstOligo = DNA.substring(0, Main.OLIGOS_SIZE);
 	}
 
 	/**
