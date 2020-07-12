@@ -7,7 +7,7 @@ public class Main {
 
     public static int OLIGOS_SIZE = 3;
     public static int DNA_SIZE;
-    private static int POPULATION_SIZE = 10;
+    public static int POPULATION_SIZE = 10;
 
     public static void main(String[] args) {
 
@@ -29,10 +29,7 @@ public class Main {
         graph.printGraph();
         System.out.println("Graph starts from: " + graph.getGraphStart().getOligo());
 
-        GeneticAlgorithm algorithm = new GeneticAlgorithm(spectrum.getOligosMap());
-        algorithm.generatePopulationZero(graph, POPULATION_SIZE);
-        algorithm.printPopulationZero();
-
-
+        GeneticAlgorithm algorithm = new GeneticAlgorithm(spectrum.getOligosMap(), graph);
+        algorithm.run();
     }
 }

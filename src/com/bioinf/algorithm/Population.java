@@ -12,11 +12,12 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Population {
 	private ArrayList<Candidate> candidates = new ArrayList<>();
-	private Map<String, Integer> oligosCurrentMap = new HashMap<>(); /* used for calculating vertexes visits for candidate fitness */
+	private Map<String, Integer> oligosCurrentMap; /* used for calculating vertexes visits for candidate fitness */
 
-	public Population(Graph graph, int size, Map<String, Integer> oligosOriginalMap) {
-		for (int i = 0; i < size; i++) {
-			System.out.println("candidate: ");
+	public void populate(Graph graph, Map<String, Integer> oligosOriginalMap) {
+		oligosCurrentMap = new HashMap<>();
+		for (int i = 0; i < Main.POPULATION_SIZE; i++) {
+//			System.out.println("candidate: ");
 			candidates.add(getRandomCandidate(graph, oligosOriginalMap));
 		}
 	}
@@ -37,7 +38,7 @@ public class Population {
 			candidate.addOligo(processedVertex.getOligo());
 			if /* vertex has edges */(processedVertex.getEdges().size() != 0) {
 				randomEdgeNum = ThreadLocalRandom.current().nextInt(0, processedVertex.getEdges().size());
-				System.out.println("edge num " + randomEdgeNum);
+//				System.out.println("edge num " + randomEdgeNum);
 				processedEdge = processedVertex.getEdge(randomEdgeNum);
 				candidateBuilder.append(processedEdge.getEnd().getOligo(), processedEdge.getWeight(), Main.OLIGOS_SIZE);
 				processedVertex = processedEdge.getEnd();
@@ -60,5 +61,17 @@ public class Population {
 	public void printPopulation() {
 		System.out.println("\nPopulation:");
 		candidates.forEach(p -> System.out.println(p.getDna() + " | fitness = " + p.getFitness()));
+	}
+
+	public ArrayList<Candidate> getCandidates() {
+		return candidates;
+	}
+
+	public void addCandidate(Candidate c) {
+		candidates.add(c);
+	}
+
+	public Candidate getCandidate(int index) {
+		return candidates.get(index);
 	}
 }
