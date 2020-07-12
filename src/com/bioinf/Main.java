@@ -32,6 +32,7 @@ public class Main {
         GeneticAlgorithm algorithm = new GeneticAlgorithm(spectrum.getOligosMap());
         algorithm.getRandomPopulation(graph, POPULATION_SIZE);
         algorithm.printPopulation();
+
         System.out.println("\nBest fitness = " + algorithm.getBestFitness());
     }
 }

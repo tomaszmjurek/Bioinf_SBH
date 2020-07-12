@@ -11,7 +11,6 @@ public class GeneticAlgorithm {
 	private ArrayList<Candidate> nextPopulation = new ArrayList<>();
 	private Map<String, Integer> oligosOriginalMap; /* used to initialize currentMap for every candidate*/
 	private Map<String, Integer> oligosCurrentMap = new HashMap<>(); /* used for calculating vertexes visits for candidate fitness */
-	private int candidateFitness = 0;
 
 	public GeneticAlgorithm(Map<String, Integer> oligos) {
 		this.oligosOriginalMap= oligos;
@@ -26,9 +25,7 @@ public class GeneticAlgorithm {
 
 	private Candidate getRandomCandidate(Graph graph) {
 		StringBuilder candidateBuilder = new StringBuilder();
-		oligosCurrentMap.clear();
-		oligosCurrentMap.putAll(oligosOriginalMap);
-		candidateFitness = 0;
+		Candidate candidate = new Candidate();
 
 		// Processing first vertex
 		Vertex processedVertex = graph.getGraphStart();
@@ -39,7 +36,7 @@ public class GeneticAlgorithm {
 		Edge processedEdge;
 
 		for /* result length similar to original */ (; candidateBuilder.toString().length() < Main.DNA_SIZE; ) {
-			calculateVertexFitness(processedVertex.getOligo());
+			candidate.addOligo(processedVertex.getOligo());
 			if /* vertex has edges */(processedVertex.getEdges().size() != 0) {
 				randomEdgeNum = ThreadLocalRandom.current().nextInt(0, processedVertex.getEdges().size());
 				System.out.println("edge num " + randomEdgeNum);
@@ -48,20 +45,11 @@ public class GeneticAlgorithm {
 				processedVertex = processedEdge.getEnd();
 			} else break;
 		}
-		return new Candidate(candidateBuilder.toString(), candidateFitness);
-	}
-
-	/**
-	 * Vertex's count minus 1 for every usage.
-	 * Candidate fitness +1 if vertex was used less times than it's oligo occurs
-	 * otherwise -1
-	 */
-	private void calculateVertexFitness(String oligo) {
-//		System.out.println("calculating vertex fitness...");
-		int activeCount = oligosCurrentMap.get(oligo);
-		if (activeCount > 0) candidateFitness++;
-		else candidateFitness--;
-		oligosCurrentMap.replace(oligo, activeCount-1);
+		candidate.setDna(candidateBuilder.toString());
+		oligosCurrentMap.clear();
+		oligosCurrentMap.putAll(oligosOriginalMap);
+		candidate.calculateFitness(oligosCurrentMap);
+		return candidate;
 	}
 
 	public void printPopulation() {
