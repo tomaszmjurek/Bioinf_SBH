@@ -30,9 +30,9 @@ public class Main {
         System.out.println("Graph starts from: " + graph.getGraphStart().getOligo());
 
         GeneticAlgorithm algorithm = new GeneticAlgorithm(spectrum.getOligosMap());
-        algorithm.getRandomPopulation(graph, POPULATION_SIZE);
-        algorithm.printPopulation();
+        algorithm.generatePopulationZero(graph, POPULATION_SIZE);
+        algorithm.printPopulationZero();
 
-        System.out.println("\nBest fitness = " + algorithm.getBestFitness());
+
     }
 }
