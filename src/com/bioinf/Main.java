@@ -8,8 +8,8 @@ public class Main {
     public static int OLIGOS_SIZE = 3;
     public static int DNA_SIZE;
     public static int POPULATION_SIZE = 10;
-    public static double CROSSOVER_PROBABILITY;
-    public static double MUTATION_PROBABILITY = 0.01;
+    public static double CROSSOVER_PROBABILITY = 10; // %
+    public static double MUTATION_PROBABILITY = 1; // %
     public static char [] NUCLEOTIDES = { 'A', 'T', 'C', 'G'};
 
     public static void main(String[] args) {

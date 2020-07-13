@@ -61,6 +61,7 @@ public class Population {
 	public void printPopulation() {
 		System.out.println("\nPopulation:");
 		candidates.forEach(p -> System.out.println(p.getDna() + " | fitness = " + p.getFitness()));
+		System.out.println("\nBest fitness = " + getBestFitness());
 	}
 
 	public ArrayList<Candidate> getCandidates() {
@@ -71,7 +72,19 @@ public class Population {
 		candidates.add(c);
 	}
 
+	public void addCandidates(ArrayList<Candidate> candidates) {
+		candidates.addAll(candidates);
+	}
+
 	public Candidate getCandidate(int index) {
 		return candidates.get(index);
+	}
+
+	public int getPopulationSize() {
+		return candidates.size();
+	}
+
+	public void replaceCandidate(int index, Candidate newCandidate) {
+		candidates.set(index, newCandidate);
 	}
 }

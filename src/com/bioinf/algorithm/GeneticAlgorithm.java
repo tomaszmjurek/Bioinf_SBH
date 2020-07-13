@@ -4,27 +4,39 @@ import com.bioinf.Main;
 import com.bioinf.graph.Graph;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class GeneticAlgorithm {
-	private ArrayList<Population> populations = new ArrayList<>();
 	private Population populationZero;
-	private Map<String, Integer> oligosOriginalMap; /* used to initialize localMap for every candidate*/
+	private Population nextGeneration = new Population();
+	private ArrayList<Candidate> children;
+	private Map<String, Integer> oligosOriginalMap = new HashMap<>(); /* used to initialize localMap for every candidate*/
 	private Graph graph;
+	private ThreadLocalRandom threadLocalRandom = ThreadLocalRandom.current();
+	private static int HUNDRED_PERCENT = 100;
 
 	public GeneticAlgorithm(Map<String, Integer> oligos, Graph graph) {
-		this.oligosOriginalMap= oligos;
+//		this.oligosOriginalMap = oligos; //changed from this
+		oligosOriginalMap.putAll(oligos);
 		this.graph = graph;
 	}
 
 	public void run() {
-//		generatePopulationZero();
-//		printPopulationZero();
-//		Population nextGeneration = selectionInPopulation(populationZero);
-//		nextGeneration.printPopulation();
-//		crossoverInPopulation();
+		generatePopulationZero();
+		printPopulationZero();
+		selectionInPopulation(populationZero);
+		System.out.println("\nAfter selection:");
+		nextGeneration.printPopulation();
+
+		crossoverInPopulation();
+		System.out.println("\nAfter crossover:");
+		nextGeneration.printPopulation();
+
 		mutationInPopulation();
+		System.out.println("\nAfter mutation:");
+		nextGeneration.printPopulation();
 	}
 
 	public void generatePopulationZero() {
@@ -35,69 +47,80 @@ public class GeneticAlgorithm {
 	/**
 	 * Duels between candidates in population
 	 */
-	public Population selectionInPopulation(Population population) {
-		Population nextGeneration = new Population();
-		for (int i = 0; i < Main.POPULATION_SIZE - 1; i += 2) {
-			Candidate candidate1 = population.getCandidate(i);
-			Candidate candidate2 = population.getCandidate(i+1);
+	public void selectionInPopulation(Population prevGeneration) { //todo po podzieleniu nieparzyste
+//		Population nextGeneration = new Population();
+		for (int i = 0; i < prevGeneration.getPopulationSize() - 1; i += 2) {
+			Candidate candidate1 = prevGeneration.getCandidate(i);
+			Candidate candidate2 = prevGeneration.getCandidate(i+1);
 			if (candidate1.getFitness() > candidate2.getFitness()) nextGeneration.addCandidate(candidate1);
 			else nextGeneration.addCandidate(candidate2);
 		}
-		return nextGeneration;
 	}
 
 	public void printPopulationZero() {
 		System.out.println("\nPopulation Zero:");
 		populationZero.printPopulation();
-		System.out.println("\nBest fitness = " + populationZero.getBestFitness());
 	}
 
-	//todo: tylko najlepsze rozwiazania, bez usuwania istniejacych
+	/**
+	 * Choosing 2 parents for crossing at percent of CROSSOVER_PROBABILITY
+	 */
 	public void crossoverInPopulation() {
-		double crossoverRate = 0.1;
-		Candidate c1 = new Candidate();
-		Candidate c2 = new Candidate();
-		c1.setDna("CGCGCGCGCGCG");
-		c2.setDna("ATATATATATAT");
-		crossover(c1, c2);
+		children = new ArrayList<>(); //zeruje sie?
+		for (int i = 0; i < nextGeneration.getPopulationSize() - 1; i += 2) {
+//			if (threadLocalRandom.nextInt(HUNDRED_PERCENT) <= Main.CROSSOVER_PROBABILITY) //todo test
+				crossover(nextGeneration.getCandidate(i).getDna(), nextGeneration.getCandidate(i+1).getDna());
+		}
+		nextGeneration.addCandidates(children);
 	}
 
-	private void crossover(Candidate parent1, Candidate parent2) {
-		int cutPoint = ThreadLocalRandom.current().nextInt(Main.OLIGOS_SIZE, Main.DNA_SIZE);
-		String parent1Dna = parent1.getDna();
-		String parent2Dna = parent2.getDna();
+	/**
+	 * Creating 2 children from 2 parents by cutting their dna parts at random point
+	 * and joining them together. Then children have fitness calculated and they're added to generation.
+	 * Cut point must not exceed shorter DNA size.
+	 */
+	private void crossover(String parent1Dna, String parent2Dna) {
+		System.out.println("crossing");
+		int shorterDnaLength = Math.max(parent1Dna.length(), parent2Dna.length());
+		int cutPoint = threadLocalRandom.nextInt(Main.OLIGOS_SIZE, shorterDnaLength - Main.OLIGOS_SIZE);
 
 		Candidate child1 = new Candidate();
 		child1.setDna(parent1Dna.substring(0, cutPoint) + parent2Dna.substring(cutPoint));
 		Candidate child2 = new Candidate();
 		child2.setDna(parent2Dna.substring(0, cutPoint) + parent1Dna.substring(cutPoint));
-		System.out.println("Child 1 dna: " + child1.getDna());
-		System.out.println("Child 2 dna: " + child2.getDna());
+
 		child1.setOligosFromDna();
 		child2.setOligosFromDna();
-
-
 		child1.calculateFitness(oligosOriginalMap);
 		child2.calculateFitness(oligosOriginalMap);
-		System.out.println("child 1 fitness " + child1.getFitness());
-		System.out.println("child 2 fitness " + child2.getFitness());
-	}
 
-	//todo: mutacja dla 2-4% z pominieciem najlepszych rozwiazan
-	private void mutationInPopulation() {
-
-		Candidate candidate = new Candidate();
-		candidate.setDna(mutation(candidate.getDna()));
+		children.add(child1);
+		children.add(child2);
 	}
 
 	/**
-	 * Changes one random nucleotide at random position to random value
+	 * Choosing candidate for mutation at percent of MUTATION_PROBABILITY
+	 * After mutating updating it's oligos and fitness
+	 */
+	private void mutationInPopulation() {
+		for (int i = 0; i < nextGeneration.getPopulationSize(); i++) {
+//			if (threadLocalRandom.nextInt(HUNDRED_PERCENT) >= Main.MUTATION_PROBABILITY) {//todo test
+				Candidate candidateToMutate = nextGeneration.getCandidate(i);
+				candidateToMutate.setDna(mutation(candidateToMutate.getDna()));
+				candidateToMutate.setOligosFromDna();
+				candidateToMutate.calculateFitness(oligosOriginalMap); // to dziala? - nie
+				nextGeneration.replaceCandidate(i, candidateToMutate);
+		}
+	}
+
+	/**
+	 * Chooses random point in DNA. Changes nucleotide to random. It can be the same as before.
 	 */
 	public String mutation(String dna) {
-		//dla 1-4%
+		System.out.println("mutating");
 		StringBuilder dnaBuilder = new StringBuilder(dna);
-		int mutationPoint = ThreadLocalRandom.current().nextInt(dna.length());
-		char randomNucleotide = Main.NUCLEOTIDES[ThreadLocalRandom.current().nextInt(4)];
+		int mutationPoint = threadLocalRandom.nextInt(dna.length());
+		char randomNucleotide = Main.NUCLEOTIDES[threadLocalRandom.nextInt(4)];
 		dnaBuilder.setCharAt(mutationPoint, randomNucleotide);
 		return dnaBuilder.toString();
 	}

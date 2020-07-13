@@ -6,12 +6,11 @@ public class DNASpectrum {
 
 	private String dna;
 	public static String firstOligo;
+	private Map<String, Integer> oligosMap = new HashMap<>();
 
 	public Map<String, Integer> getOligosMap() {
 		return oligosMap;
 	}
-
-	private Map<String, Integer> oligosMap = new HashMap<>();
 
 	public DNASpectrum(String DNA) {
 		this.dna = DNA;
@@ -36,7 +35,6 @@ public class DNASpectrum {
 	public void setDna(String dna) {
 		this.dna = dna;
 	}
-
 
 	public void printOligos() {
 		oligosMap.forEach((key, value) -> System.out.println(key + " " + value));
