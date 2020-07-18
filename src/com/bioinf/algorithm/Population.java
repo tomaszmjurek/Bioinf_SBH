@@ -73,7 +73,7 @@ public class Population {
 	}
 
 	public void addCandidates(ArrayList<Candidate> candidates) {
-		candidates.addAll(candidates);
+		this.candidates.addAll(candidates);
 	}
 
 	public Candidate getCandidate(int index) {

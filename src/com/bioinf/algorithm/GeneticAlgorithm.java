@@ -11,7 +11,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class GeneticAlgorithm {
 	private Population populationZero;
 	private Population nextGeneration = new Population();
-	private ArrayList<Candidate> children;
+	private ArrayList<Candidate> children = new ArrayList<>();
 	private Map<String, Integer> oligosOriginalMap = new HashMap<>(); /* used to initialize localMap for every candidate*/
 	private Graph graph;
 	private ThreadLocalRandom threadLocalRandom = ThreadLocalRandom.current();
@@ -45,15 +45,22 @@ public class GeneticAlgorithm {
 	}
 
 	/**
-	 * Duels between candidates in population
+	 * Duels between candidates in population. Population size must always stay even.
 	 */
-	public void selectionInPopulation(Population prevGeneration) { //todo po podzieleniu nieparzyste
+	public void selectionInPopulation(Population prevGeneration) {
 //		Population nextGeneration = new Population();
-		for (int i = 0; i < prevGeneration.getPopulationSize() - 1; i += 2) {
+		boolean isPopulationEven = false;
+		if (prevGeneration.getPopulationSize() % 2 == 0) isPopulationEven = true;
+		int lastPairIndex = prevGeneration.getPopulationSize() - 1;
+		for (int i = 0; i < prevGeneration.getPopulationSize(); i += 2) {
 			Candidate candidate1 = prevGeneration.getCandidate(i);
-			Candidate candidate2 = prevGeneration.getCandidate(i+1);
-			if (candidate1.getFitness() > candidate2.getFitness()) nextGeneration.addCandidate(candidate1);
-			else nextGeneration.addCandidate(candidate2);
+			if (!isPopulationEven && i == lastPairIndex)
+				nextGeneration.addCandidate(candidate1);
+			else {
+				Candidate candidate2 = prevGeneration.getCandidate(i + 1);
+				if (candidate1.getFitness() > candidate2.getFitness()) nextGeneration.addCandidate(candidate1);
+				else nextGeneration.addCandidate(candidate2);
+			}
 		}
 	}
 
@@ -66,8 +73,8 @@ public class GeneticAlgorithm {
 	 * Choosing 2 parents for crossing at percent of CROSSOVER_PROBABILITY
 	 */
 	public void crossoverInPopulation() {
-		children = new ArrayList<>(); //zeruje sie?
-		for (int i = 0; i < nextGeneration.getPopulationSize() - 1; i += 2) {
+		children.clear(); //zeruje sie?
+		for (int i = 0; i < nextGeneration.getPopulationSize() - 2; i += 2) {
 //			if (threadLocalRandom.nextInt(HUNDRED_PERCENT) <= Main.CROSSOVER_PROBABILITY) //todo test
 				crossover(nextGeneration.getCandidate(i).getDna(), nextGeneration.getCandidate(i+1).getDna());
 		}
@@ -82,7 +89,7 @@ public class GeneticAlgorithm {
 	private void crossover(String parent1Dna, String parent2Dna) {
 		System.out.println("crossing");
 		int shorterDnaLength = Math.max(parent1Dna.length(), parent2Dna.length());
-		int cutPoint = threadLocalRandom.nextInt(Main.OLIGOS_SIZE, shorterDnaLength - Main.OLIGOS_SIZE);
+		int cutPoint = threadLocalRandom.nextInt(Main.OLIGOS_SIZE, shorterDnaLength);
 
 		Candidate child1 = new Candidate();
 		child1.setDna(parent1Dna.substring(0, cutPoint) + parent2Dna.substring(cutPoint));
@@ -92,7 +99,7 @@ public class GeneticAlgorithm {
 		child1.setOligosFromDna();
 		child2.setOligosFromDna();
 		child1.calculateFitness(oligosOriginalMap);
-		child2.calculateFitness(oligosOriginalMap);
+		child2.calculateFitness(oligosOriginalMap); //todo BLAD
 
 		children.add(child1);
 		children.add(child2);
