@@ -3,6 +3,7 @@ package com.bioinf.algorithm;
 import com.bioinf.Main;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Candidate {
@@ -47,7 +48,8 @@ public class Candidate {
 	 * Candidate fitness +1 if vertex was used less times than it's oligo occurs
 	 * otherwise -1
 	 */
-	public void calculateFitness(Map<String, Integer> localOligosMap) {
+	public void calculateFitness(Map<String, Integer> globalOligosMap) {
+		Map<String, Integer> localOligosMap = new HashMap<>(globalOligosMap);
 		int activeCount;
 		for (int i = 0; i < oligos.size(); i++) {
 			if (localOligosMap.containsKey(oligos.get(i))) {

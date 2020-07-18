@@ -12,10 +12,9 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Population {
 	private ArrayList<Candidate> candidates = new ArrayList<>();
-	private Map<String, Integer> oligosCurrentMap; /* used for calculating vertexes visits for candidate fitness */
+	private Map<String, Integer> oligosCurrentMap = new HashMap<>(); /* used for calculating vertexes visits for candidate fitness */
 
 	public void populate(Graph graph, Map<String, Integer> oligosOriginalMap) {
-		oligosCurrentMap = new HashMap<>();
 		for (int i = 0; i < Main.POPULATION_SIZE; i++) {
 //			System.out.println("candidate: ");
 			candidates.add(getRandomCandidate(graph, oligosOriginalMap));

@@ -18,7 +18,6 @@ public class GeneticAlgorithm {
 	private static int HUNDRED_PERCENT = 100;
 
 	public GeneticAlgorithm(Map<String, Integer> oligos, Graph graph) {
-//		this.oligosOriginalMap = oligos; //changed from this
 		oligosOriginalMap.putAll(oligos);
 		this.graph = graph;
 	}
