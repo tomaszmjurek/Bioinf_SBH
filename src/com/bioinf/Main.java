@@ -16,6 +16,7 @@ public class Main {
 
         String DNA1 = "ATGCGTCAGCGACTGTACGTACGTACGTGCATGCAGT";
         String DNA2 = "ATGATGATC"; //ATGx2 TGAx2 GATx2 ATC
+        String DNA3 = "ATGA";
 
         DNA_SIZE = DNA2.length();
         DNASpectrum spectrum = new DNASpectrum(DNA2);

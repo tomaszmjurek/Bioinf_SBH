@@ -87,7 +87,7 @@ public class GeneticAlgorithm {
 	 */
 	private void crossover(String parent1Dna, String parent2Dna) {
 		System.out.println("crossing");
-		int shorterDnaLength = Math.max(parent1Dna.length(), parent2Dna.length());
+		int shorterDnaLength = Math.min(parent1Dna.length(), parent2Dna.length());
 		int cutPoint = threadLocalRandom.nextInt(Main.OLIGOS_SIZE, shorterDnaLength);
 
 		Candidate child1 = new Candidate();
@@ -98,7 +98,7 @@ public class GeneticAlgorithm {
 		child1.setOligosFromDna();
 		child2.setOligosFromDna();
 		child1.calculateFitness(oligosOriginalMap);
-		child2.calculateFitness(oligosOriginalMap); //todo BLAD
+		child2.calculateFitness(oligosOriginalMap);
 
 		children.add(child1);
 		children.add(child2);
