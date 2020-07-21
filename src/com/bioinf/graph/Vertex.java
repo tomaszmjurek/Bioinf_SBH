@@ -3,7 +3,7 @@ package com.bioinf.graph;
 import java.util.LinkedList;
 
 public class Vertex {
-	private int index; //liczba porzadkowa
+	private int index; // Liczba porządkowa
 	private String oligo;
 	private int count;
 	private LinkedList<Edge> edge = new LinkedList<>();
@@ -47,12 +47,5 @@ public class Vertex {
 	public int getIndex() {
 		return index;
 	}
-
-//	public Edge getEdge(String o) {
-//		for(Edge e : edge)
-//			if(e.getEnd()) c
-//				return e;
-//		return null;
-//	}
 
 }

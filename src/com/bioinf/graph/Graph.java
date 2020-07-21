@@ -43,7 +43,7 @@ public class Graph {
 	}
 
 	public Vertex getVertex(int i) {
-		return vertexes.get(i); //mozliwe ze bedzie trzeba iterowac szukajac v.index
+		return vertexes.get(i);
 	}
 
 	public LinkedList<Vertex> getVertexes() {

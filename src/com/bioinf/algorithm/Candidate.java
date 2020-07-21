@@ -52,29 +52,23 @@ public class Candidate {
 		Map<String, Integer> localOligosMap = new HashMap<>(globalOligosMap);
 		int activeCount;
 		fitness = 0;
-//		System.out.println("Processed " + this.getDna() + " fitness = ");
 		for (int i = 0; i < oligos.size(); i++) {
 			if (localOligosMap.containsKey(oligos.get(i))) {
-//				System.out.print(" [hit - " + oligos.get(i) + " ] ");
 				activeCount = localOligosMap.get(oligos.get(i));
 				if (activeCount > 0) fitness++;
 //				else fitness--;
 				localOligosMap.replace(oligos.get(i), activeCount - 1);
 			}
-//			System.out.print(fitness + " ");
 		}
 	}
 
 	public void setOligosFromDna() {
 		int oligosNum = dna.length() - Main.OLIGOS_SIZE + 1;
-//		System.out.println("Set oligo from DNA " + dna + " = ");
 		oligos.clear();
 		for (int i = 0; i < oligosNum; i++) {
 			String oligo = dna.substring(i, i + Main.OLIGOS_SIZE);
 			oligos.add(oligo);
-//			System.out.print(oligo + " ");
 		}
-//		System.out.println();
 	}
 
 	private void printOligos() {

@@ -39,4 +39,9 @@ public class DNASpectrum {
 	public void printOligos() {
 		oligosMap.forEach((key, value) -> System.out.println(key + " " + value));
 	}
+
+	public void generatePositiveErrors() {
+		
+	}
+
 }

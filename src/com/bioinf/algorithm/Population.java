@@ -16,7 +16,6 @@ public class Population {
 
 	public void populate(Graph graph, Map<String, Integer> oligosOriginalMap) {
 		for (int i = 0; i < Main.POPULATION_SIZE; i++) {
-//			System.out.println("candidate: ");
 			candidates.add(getRandomCandidate(graph, oligosOriginalMap));
 		}
 	}
@@ -37,7 +36,6 @@ public class Population {
 			candidate.addOligo(processedVertex.getOligo());
 			if /* vertex has edges */(processedVertex.getEdges().size() != 0) {
 				randomEdgeNum = ThreadLocalRandom.current().nextInt(0, processedVertex.getEdges().size());
-//				System.out.println("edge num " + randomEdgeNum);
 				processedEdge = processedVertex.getEdge(randomEdgeNum);
 				candidateBuilder.append(processedEdge.getEnd().getOligo(), processedEdge.getWeight(), Main.OLIGOS_SIZE);
 				processedVertex = processedEdge.getEnd();

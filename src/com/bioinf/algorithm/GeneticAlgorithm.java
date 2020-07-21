@@ -27,27 +27,36 @@ public class GeneticAlgorithm {
 
 		Population prevGeneration = populationZero;
 
+		int newBestFitness, stagnationCount = 0;
+		int oldBestFitness = prevGeneration.getBestCandidate().getFitness();
 		for (int i = 1; i < Main.GENERATIONS_NUMBER; i++) {
-			if (prevGeneration.getPopulationSize() < 2) {
-				System.out.println("Found the best candidate! Stopping the loop");
+			if (prevGeneration.getPopulationSize() < 2 || isStagnation(stagnationCount)) {
+				System.out.println("Found the best candidate OR stagnation reached! Stopping the loop at iteration " + i);
 				break;
 			}
 			System.out.println("\nGENERATION " + i);
 			nextGeneration = new Population(); //?
 
 			selectionInPopulation(prevGeneration);
-			System.out.println("\nAfter selection:");
-			nextGeneration.printPopulation();
+//			System.out.println("\nAfter selection:");
+//			nextGeneration.printPopulation();
 
 			crossoverInPopulation();
-			System.out.println("\nAfter crossover:");
-			nextGeneration.printPopulation();
+//			System.out.println("\nAfter crossover:");
+//			nextGeneration.printPopulation();
 
 			mutationInPopulation();
-			System.out.println("\nAfter mutation:");
-			nextGeneration.printPopulation();
+//			System.out.println("\nAfter mutation:"); //moze popsuc najlepszego?
 
+			// New population produced
+			nextGeneration.printPopulation();
 			prevGeneration = nextGeneration;
+
+			// Calculating solutions stagnation
+			newBestFitness = prevGeneration.getBestCandidate().getFitness();
+			if (newBestFitness == oldBestFitness) stagnationCount++;
+			else stagnationCount = 0;
+			oldBestFitness = newBestFitness;
 		}
 	}
 
@@ -85,9 +94,10 @@ public class GeneticAlgorithm {
 	 */
 	public void crossoverInPopulation() {
 		children.clear();
-		for (int i = 0; i < nextGeneration.getPopulationSize() - 2; i += 2)
+		for (int i = 0; i < nextGeneration.getPopulationSize() - 2; i += 2) {
 			if (threadLocalRandom.nextInt(HUNDRED_PERCENT) <= Main.CROSSOVER_PROBABILITY)
-				crossover(nextGeneration.getCandidate(i).getDna(), nextGeneration.getCandidate(i+1).getDna());
+				crossover(nextGeneration.getCandidate(i).getDna(), nextGeneration.getCandidate(i + 1).getDna());
+		}
 		nextGeneration.addCandidates(children);
 	}
 
@@ -140,5 +150,13 @@ public class GeneticAlgorithm {
 		char randomNucleotide = Main.NUCLEOTIDES[threadLocalRandom.nextInt(4)];
 		dnaBuilder.setCharAt(mutationPoint, randomNucleotide);
 		return dnaBuilder.toString();
+	}
+
+	/**
+	 * If 20 consecutive bestFitness is same method triggers stopping the main loop
+	 */
+	private boolean isStagnation(int count) {
+		if (count > 20) return true;
+		return false;
 	}
 }
