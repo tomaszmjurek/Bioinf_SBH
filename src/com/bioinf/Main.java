@@ -8,8 +8,9 @@ public class Main {
     public static int OLIGOS_SIZE = 3;
     public static int DNA_SIZE;
     public static int POPULATION_SIZE = 10;
-    public static double CROSSOVER_PROBABILITY = 10; // %
-    public static double MUTATION_PROBABILITY = 1; // %
+    public static int GENERATIONS_NUMBER = 2;
+    public static double CROSSOVER_PROBABILITY = 50; // %
+    public static double MUTATION_PROBABILITY = 5; // %
     public static char [] NUCLEOTIDES = { 'A', 'T', 'C', 'G'};
 
     public static void main(String[] args) {
@@ -20,11 +21,12 @@ public class Main {
 
         DNA_SIZE = DNA2.length();
         DNASpectrum spectrum = new DNASpectrum(DNA2);
+        System.out.println("Spectrum: " + spectrum.getDna());
         spectrum.cutDNAIntoOligos();
         // bledy pozytywne - dodajemy pare nieistniejacych wczesniej oligo o licznosci 1
         // bledy negatywne - usuwamy pare oligo (zmniejszamy licznosc czy tylko te z 1?)
 
-        System.out.println("Oligonucleotides:");
+        System.out.println("\nOligonucleotides:");
         spectrum.printOligos();
 
         Graph graph = new Graph();

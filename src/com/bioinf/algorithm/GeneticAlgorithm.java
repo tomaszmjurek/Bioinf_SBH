@@ -2,7 +2,6 @@ package com.bioinf.algorithm;
 
 import com.bioinf.Main;
 import com.bioinf.graph.Graph;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +9,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class GeneticAlgorithm {
 	private Population populationZero;
-	private Population nextGeneration = new Population();
+	private Population nextGeneration;
 	private ArrayList<Candidate> children = new ArrayList<>();
 	private Map<String, Integer> oligosOriginalMap = new HashMap<>(); /* used to initialize localMap for every candidate*/
 	private Graph graph;
@@ -25,17 +24,31 @@ public class GeneticAlgorithm {
 	public void run() {
 		generatePopulationZero();
 		printPopulationZero();
-		selectionInPopulation(populationZero);
-		System.out.println("\nAfter selection:");
-		nextGeneration.printPopulation();
 
-		crossoverInPopulation();
-		System.out.println("\nAfter crossover:");
-		nextGeneration.printPopulation();
+		Population prevGeneration = populationZero;
 
-		mutationInPopulation();
-		System.out.println("\nAfter mutation:");
-		nextGeneration.printPopulation();
+		for (int i = 1; i < Main.GENERATIONS_NUMBER; i++) {
+			if (prevGeneration.getPopulationSize() < 2) {
+				System.out.println("Found the best candidate! Stopping the loop");
+				break;
+			}
+			System.out.println("\nGENERATION " + i);
+			nextGeneration = new Population(); //?
+
+			selectionInPopulation(prevGeneration);
+			System.out.println("\nAfter selection:");
+			nextGeneration.printPopulation();
+
+			crossoverInPopulation();
+			System.out.println("\nAfter crossover:");
+			nextGeneration.printPopulation();
+
+			mutationInPopulation();
+			System.out.println("\nAfter mutation:");
+			nextGeneration.printPopulation();
+
+			prevGeneration = nextGeneration;
+		}
 	}
 
 	public void generatePopulationZero() {
@@ -47,7 +60,6 @@ public class GeneticAlgorithm {
 	 * Duels between candidates in population. Population size must always stay even.
 	 */
 	public void selectionInPopulation(Population prevGeneration) {
-//		Population nextGeneration = new Population();
 		boolean isPopulationEven = false;
 		if (prevGeneration.getPopulationSize() % 2 == 0) isPopulationEven = true;
 		int lastPairIndex = prevGeneration.getPopulationSize() - 1;
@@ -72,11 +84,10 @@ public class GeneticAlgorithm {
 	 * Choosing 2 parents for crossing at percent of CROSSOVER_PROBABILITY
 	 */
 	public void crossoverInPopulation() {
-		children.clear(); //zeruje sie?
-		for (int i = 0; i < nextGeneration.getPopulationSize() - 2; i += 2) {
-//			if (threadLocalRandom.nextInt(HUNDRED_PERCENT) <= Main.CROSSOVER_PROBABILITY) //todo test
+		children.clear();
+		for (int i = 0; i < nextGeneration.getPopulationSize() - 2; i += 2)
+			if (threadLocalRandom.nextInt(HUNDRED_PERCENT) <= Main.CROSSOVER_PROBABILITY)
 				crossover(nextGeneration.getCandidate(i).getDna(), nextGeneration.getCandidate(i+1).getDna());
-		}
 		nextGeneration.addCandidates(children);
 	}
 
@@ -109,12 +120,12 @@ public class GeneticAlgorithm {
 	 * After mutating updating it's oligos and fitness
 	 */
 	private void mutationInPopulation() {
-		for (int i = 0; i < nextGeneration.getPopulationSize(); i++) {
-//			if (threadLocalRandom.nextInt(HUNDRED_PERCENT) >= Main.MUTATION_PROBABILITY) {//todo test
+		for (int i = 0; i < nextGeneration.getPopulationSize(); i++)
+			if (threadLocalRandom.nextInt(HUNDRED_PERCENT) <= Main.MUTATION_PROBABILITY) {
 				Candidate candidateToMutate = nextGeneration.getCandidate(i);
 				candidateToMutate.setDna(mutation(candidateToMutate.getDna()));
 				candidateToMutate.setOligosFromDna();
-				candidateToMutate.calculateFitness(oligosOriginalMap); // to dziala? - nie
+				candidateToMutate.calculateFitness(oligosOriginalMap);
 				nextGeneration.replaceCandidate(i, candidateToMutate);
 		}
 	}

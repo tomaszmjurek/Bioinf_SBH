@@ -50,17 +50,19 @@ public class Population {
 		return candidate;
 	}
 
-	public int getBestFitness() {
-		int bestFitness = 0;
+	public Candidate getBestCandidate() {
+		Candidate bestCandidate = new Candidate();
+		bestCandidate.setFitness(0);
 		for (Candidate candidate : candidates)
-			if (candidate.getFitness() > bestFitness) bestFitness = candidate.getFitness();
-		return bestFitness;
+			if (candidate.getFitness() > bestCandidate.getFitness()) bestCandidate = candidate;
+		return bestCandidate;
 	}
 
 	public void printPopulation() {
 		System.out.println("\nPopulation:");
 		candidates.forEach(p -> System.out.println(p.getDna() + " | fitness = " + p.getFitness()));
-		System.out.println("\nBest fitness = " + getBestFitness());
+		Candidate bestCandidate = getBestCandidate();
+		System.out.println("----------------\nBest = " + bestCandidate.getDna() + " fitness = " + getBestCandidate().getFitness());
 	}
 
 	public ArrayList<Candidate> getCandidates() {
