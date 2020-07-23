@@ -1,5 +1,6 @@
 package com.bioinf;
 
+import com.bioinf.algorithm.Candidate;
 import com.bioinf.algorithm.GeneticAlgorithm;
 import com.bioinf.graph.Graph;
 
@@ -9,13 +10,14 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Main {
 
-    public static int OLIGO_SIZE = 7;
-    public static int DNA_SIZE = 300;
-    public static int POPULATION_SIZE = 10; //500
-    public static int GENERATIONS_NUMBER = 100; //200
-    public static double CROSSOVER_PROBABILITY = 95; // %
+    public static int OLIGO_SIZE = 5;
+    public static int DNA_SIZE = 500;
+    public static int POPULATION_SIZE = 100;
+    public static int GENERATIONS_NUMBER = 1000;
+    public static double CROSSOVER_PROBABILITY = 50; // %
     public static double MUTATION_PROBABILITY = 4; // %
-    public static int ERRORS_STEP = 5; // error for each step todo change for 5%
+    public static int ERRORS_PROBABILITY = 5; // %
+    public static int STAGNATION_ITERATIONS = 50; // stop after X same best results
     public static char [] NUCLEOTIDES = { 'A', 'T', 'C', 'G'};
 
     private static String getDNAFromFile() throws IOException {
@@ -33,9 +35,6 @@ public class Main {
 
     public static void main(String[] args) {
 
-//        String DNA1 = "ATGATGATC"; //ATGx2 TGAx2 GATx2 ATC
-//        String DNA2 = "TTCGCATGACTGCATGCTGACTAGCTACGTATATTACGCGGCGCTAGCCCATGCACGCTAGTACGTCGTACGT";
-
         String DNA = "";
         try {
             DNA = getDNAFromFile();
@@ -43,7 +42,6 @@ public class Main {
             System.out.println(e);
         }
 
-//        DNA_SIZE = DNA1.length();
         DNASpectrum spectrum = new DNASpectrum(DNA);
         System.out.println("Spectrum: " + spectrum.getDna());
 
@@ -56,13 +54,14 @@ public class Main {
 
         Graph graph = new Graph();
         graph.buildGraph(spectrum.getOligosMap());
-        System.out.println("\nGraph:");
-        graph.printGraph();
+//        System.out.println("\nGraph:");
+//        graph.printGraph();
         System.out.println("Graph starts from: " + graph.getGraphStart().getOligo());
 
         GeneticAlgorithm algorithm = new GeneticAlgorithm(spectrum.getOligosMap(), graph);
-        String resultDNA = algorithm.run();
+        Candidate bestCandidate = algorithm.run();
 
-        System.out.println("\nOriginal DNA was " + spectrum.getDna());
+        System.out.println("\nBest result:\n" + bestCandidate.getDna() + "\nFitness: " + bestCandidate.getFitness());
+        System.out.println("\nOriginal DNA was:\n" + spectrum.getDna());
     }
 }

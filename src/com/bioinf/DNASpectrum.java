@@ -50,7 +50,7 @@ public class DNASpectrum {
 	 * If oligo count was 1 it is removed from map.
 	 */
 	public void generateNegativeErrors() {
-		int toDeleteCount = oligosMap.size() / Main.ERRORS_STEP;
+		int toDeleteCount = oligosMap.size() / Main.ERRORS_PROBABILITY;
 		for (int i = 0; i < toDeleteCount; i++) {
 			int toDeleteIndex = threadLocalRandom.nextInt(oligosMap.size());
 			String oligo =  oligosList.get(toDeleteIndex);
@@ -70,7 +70,7 @@ public class DNASpectrum {
 	 * If oligo already exists it's count is incremented.
 	 */
 	public void generatePositiveErrors() {
-		int toAddCount = oligosMap.size() / Main.ERRORS_STEP;
+		int toAddCount = oligosMap.size() / Main.ERRORS_PROBABILITY;
 		for (int i = 0; i < toAddCount; i++) {
 			String randomOligo = generateRandomOligo();
 			if  (oligosMap.containsKey(randomOligo))

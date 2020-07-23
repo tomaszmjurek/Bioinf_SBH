@@ -22,17 +22,16 @@ public class GeneticAlgorithm {
 		this.graph = graph;
 	}
 
-	public String run() {
+	public Candidate run() {
 		generatePopulationZero();
-		printPopulationZero();
-
+//		printPopulationZero();
 		prevGeneration = populationZero;
 
 		int newBestFitness, stagnationCount = 0;
 		int oldBestFitness = prevGeneration.getBestCandidate().getFitness();
 		for (int i = 1; i < Main.GENERATIONS_NUMBER; i++) {
-			if (prevGeneration.getPopulationSize() < 2 || isStagnation(stagnationCount)) {
-				System.out.println("Found the best candidate OR stagnation reached! Stopping the loop at iteration " + i);
+			if (isStagnation(stagnationCount)) {
+				System.out.println("Stagnation reached! Stopping the loop at iteration " + i);
 				break;
 			}
 			System.out.println("\nGENERATION " + i);
@@ -43,7 +42,7 @@ public class GeneticAlgorithm {
 			selectionInPopulation(prevGeneration);
 
 			// New population produced
-			nextGeneration.printPopulation();
+//			nextGeneration.printPopulation();
 			prevGeneration = nextGeneration;
 
 			// Calculating solutions stagnation
@@ -52,7 +51,7 @@ public class GeneticAlgorithm {
 			else stagnationCount = 0;
 			oldBestFitness = newBestFitness;
 		}
-		return prevGeneration.getBestCandidate().getDna();
+		return prevGeneration.getBestCandidate();
 	}
 
 	public void generatePopulationZero() {
@@ -61,24 +60,8 @@ public class GeneticAlgorithm {
 	}
 
 	/**
-	 * Duels between candidates in population. Population size must always stay even.
+	 * Duels between candidates in population. Population size must always stay same.
 	 */
-	public void selectionInPopulationOLD(Population prevGeneration) {
-		boolean isPopulationEven = false;
-		if (prevGeneration.getPopulationSize() % 2 == 0) isPopulationEven = true;
-		int lastPairIndex = prevGeneration.getPopulationSize() - 1;
-		for (int i = 0; i < prevGeneration.getPopulationSize(); i += 2) {
-			Candidate candidate1 = prevGeneration.getCandidate(i);
-			if (!isPopulationEven && i == lastPairIndex)
-				nextGeneration.addCandidate(candidate1);
-			else {
-				Candidate candidate2 = prevGeneration.getCandidate(i + 1);
-				if (candidate1.getFitness() > candidate2.getFitness()) nextGeneration.addCandidate(candidate1);
-				else nextGeneration.addCandidate(candidate2);
-			}
-		}
-	}
-
 	public void selectionInPopulation(Population prevGeneration) {
 		while (nextGeneration.getPopulationSize() != Main.POPULATION_SIZE) {
 			int randomIndex1 = threadLocalRandom.nextInt(prevGeneration.getPopulationSize());
@@ -121,7 +104,7 @@ public class GeneticAlgorithm {
 	 * Cut point must not exceed shorter DNA size.
 	 */
 	private void crossover(String parent1Dna, String parent2Dna) {
-		System.out.println("crossing");
+//		System.out.println("crossing");
 		int shorterDnaLength = Math.min(parent1Dna.length(), parent2Dna.length());
 		int cutPoint = threadLocalRandom.nextInt(Main.OLIGO_SIZE, shorterDnaLength);
 
@@ -158,7 +141,7 @@ public class GeneticAlgorithm {
 	 * Chooses random point in DNA. Changes nucleotide to random. It can be the same as before.
 	 */
 	public String mutation(String dna) {
-		System.out.println("mutating");
+//		System.out.println("mutating");
 		StringBuilder dnaBuilder = new StringBuilder(dna);
 		int mutationPoint = threadLocalRandom.nextInt(dna.length());
 		char randomNucleotide = Main.NUCLEOTIDES[threadLocalRandom.nextInt(4)];
@@ -170,7 +153,7 @@ public class GeneticAlgorithm {
 	 * If 20 consecutive bestFitness is same method triggers stopping the main loop
 	 */
 	private boolean isStagnation(int count) {
-		if (count > 35) return true;
+		if (count > Main.STAGNATION_ITERATIONS) return true;
 		return false;
 	}
 }
