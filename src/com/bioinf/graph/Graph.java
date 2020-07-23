@@ -66,8 +66,8 @@ public class Graph {
 			if (isFirstOligoIndex(i)) startIndex = i;
 			for(int j = 0; j < vertexCount; j++) {
 				if (i == j) continue;
-				for (int x = 1; x < Main.OLIGOS_SIZE; x++) {
-					if (hasSameSubstring(x, i, j)) addEdge(i, j, Main.OLIGOS_SIZE-x);
+				for (int x = 1; x < Main.OLIGO_SIZE; x++) {
+					if (hasSameSubstring(x, i, j)) addEdge(i, j, Main.OLIGO_SIZE -x);
 				}
 			}
 		}
@@ -83,8 +83,8 @@ public class Graph {
 	 * Another is prefix of the end vertex oligo
 	 */
 	private boolean hasSameSubstring(int begin, int beginVertexIndex, int endVertexIndex) {
-		return vertexes.get(beginVertexIndex).getOligo().substring(begin, Main.OLIGOS_SIZE).equals(
-				vertexes.get(endVertexIndex).getOligo().substring(0, Main.OLIGOS_SIZE - begin));
+		return vertexes.get(beginVertexIndex).getOligo().substring(begin, Main.OLIGO_SIZE).equals(
+				vertexes.get(endVertexIndex).getOligo().substring(0, Main.OLIGO_SIZE - begin));
 	}
 
 }

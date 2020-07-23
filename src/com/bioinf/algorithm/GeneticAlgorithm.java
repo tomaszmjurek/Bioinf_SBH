@@ -109,7 +109,7 @@ public class GeneticAlgorithm {
 	private void crossover(String parent1Dna, String parent2Dna) {
 		System.out.println("crossing");
 		int shorterDnaLength = Math.min(parent1Dna.length(), parent2Dna.length());
-		int cutPoint = threadLocalRandom.nextInt(Main.OLIGOS_SIZE, shorterDnaLength);
+		int cutPoint = threadLocalRandom.nextInt(Main.OLIGO_SIZE, shorterDnaLength);
 
 		Candidate child1 = new Candidate();
 		child1.setDna(parent1Dna.substring(0, cutPoint) + parent2Dna.substring(cutPoint));
@@ -156,7 +156,7 @@ public class GeneticAlgorithm {
 	 * If 20 consecutive bestFitness is same method triggers stopping the main loop
 	 */
 	private boolean isStagnation(int count) {
-		if (count > 20) return true;
+		if (count > 22) return true;
 		return false;
 	}
 }

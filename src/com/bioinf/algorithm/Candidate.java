@@ -63,10 +63,10 @@ public class Candidate {
 	}
 
 	public void setOligosFromDna() {
-		int oligosNum = dna.length() - Main.OLIGOS_SIZE + 1;
+		int oligosNum = dna.length() - Main.OLIGO_SIZE + 1;
 		oligos.clear();
 		for (int i = 0; i < oligosNum; i++) {
-			String oligo = dna.substring(i, i + Main.OLIGOS_SIZE);
+			String oligo = dna.substring(i, i + Main.OLIGO_SIZE);
 			oligos.add(oligo);
 		}
 	}

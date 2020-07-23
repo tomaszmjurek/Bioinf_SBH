@@ -13,7 +13,7 @@ public class DNASpectrum {
 
 	public DNASpectrum(String DNA) {
 		this.dna = DNA;
-		firstOligo = DNA.substring(0, Main.OLIGOS_SIZE);
+		firstOligo = DNA.substring(0, Main.OLIGO_SIZE);
 	}
 
 	public Map<String, Integer> getOligosMap() {
@@ -24,9 +24,9 @@ public class DNASpectrum {
 	 * Cuts given DNA into oligos, count duplicates, shuffle order
      */
 	public void cutDNAIntoOligos() {
-		int oligosNum = dna.length() - Main.OLIGOS_SIZE + 1;
+		int oligosNum = dna.length() - Main.OLIGO_SIZE + 1;
 		for (int i = 0; i < oligosNum; i++) {
-			String oligo = dna.substring(i, i + Main.OLIGOS_SIZE);
+			String oligo = dna.substring(i, i + Main.OLIGO_SIZE);
 			oligosMap.merge(oligo, 1, Integer::sum);
 		}
 		createOligosList();
@@ -86,7 +86,7 @@ public class DNASpectrum {
 
 	private String generateRandomOligo() {
 		StringBuilder oligoBuilder = new StringBuilder();
-		for (int i = 0; i < Main.OLIGOS_SIZE; i++) {
+		for (int i = 0; i < Main.OLIGO_SIZE; i++) {
 			char randomNucleotide = Main.NUCLEOTIDES[threadLocalRandom.nextInt(4)];
 			oligoBuilder.append(randomNucleotide);
 		}

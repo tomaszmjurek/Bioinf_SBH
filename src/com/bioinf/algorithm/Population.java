@@ -37,7 +37,7 @@ public class Population {
 			if /* vertex has edges */(processedVertex.getEdges().size() != 0) {
 				randomEdgeNum = ThreadLocalRandom.current().nextInt(0, processedVertex.getEdges().size());
 				processedEdge = processedVertex.getEdge(randomEdgeNum);
-				candidateBuilder.append(processedEdge.getEnd().getOligo(), processedEdge.getWeight(), Main.OLIGOS_SIZE);
+				candidateBuilder.append(processedEdge.getEnd().getOligo(), processedEdge.getWeight(), Main.OLIGO_SIZE);
 				processedVertex = processedEdge.getEnd();
 			} else break;
 		}
