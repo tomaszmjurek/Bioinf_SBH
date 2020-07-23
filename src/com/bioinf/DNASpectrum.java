@@ -57,7 +57,8 @@ public class DNASpectrum {
 			if /* it's first oligo */ (oligo.equals(firstOligo)) i--;
 			else {
 				if (oligosMap.get(oligo) == 1) oligosMap.remove(oligo);
-				else oligosMap.replace(oligo, oligosMap.get(oligo) - 1); // newValue?
+				else oligosMap.replace(oligo, oligosMap.get(oligo) - 1);
+				oligosList.remove(toDeleteIndex);
 				System.out.println("Negative error occurred - removed one " + oligo);
 			}
 		}
@@ -73,7 +74,7 @@ public class DNASpectrum {
 		for (int i = 0; i < toAddCount; i++) {
 			String randomOligo = generateRandomOligo();
 			if  (oligosMap.containsKey(randomOligo))
-				oligosMap.replace(randomOligo, oligosMap.get(randomOligo) + 1); // newValue?
+				oligosMap.replace(randomOligo, oligosMap.get(randomOligo) + 1);
 			else oligosMap.put(randomOligo, 1);
 			System.out.println("Positive error occurred - added one " + randomOligo);
 		}
