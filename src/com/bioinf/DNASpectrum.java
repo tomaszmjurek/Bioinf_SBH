@@ -81,8 +81,13 @@ public class DNASpectrum {
 	}
 
 	private void createOligosList() {
-		for (Map.Entry<String, Integer> entry : oligosMap.entrySet())
-			oligosList.add(entry.getKey());
+		for (Map.Entry<String, Integer> entry : oligosMap.entrySet()) {
+			int count = entry.getValue();
+			while (count > 0) {
+				oligosList.add(entry.getKey());
+				count--;
+			}
+		}
 	}
 
 	private String generateRandomOligo() {

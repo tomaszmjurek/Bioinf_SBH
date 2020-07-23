@@ -71,6 +71,10 @@ public class Population {
 		candidates.add(c);
 	}
 
+	public void removeCandidate(Candidate c) {
+		candidates.remove(c);
+	}
+
 	public void addCandidates(ArrayList<Candidate> candidates) {
 		this.candidates.addAll(candidates);
 	}

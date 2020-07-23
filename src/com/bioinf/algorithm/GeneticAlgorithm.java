@@ -10,6 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class GeneticAlgorithm {
 	private Population populationZero;
 	private Population nextGeneration;
+	private Population prevGeneration;
 	private ArrayList<Candidate> children = new ArrayList<>();
 	private Map<String, Integer> oligosOriginalMap = new HashMap<>(); /* used to initialize localMap for every candidate*/
 	private Graph graph;
@@ -21,11 +22,11 @@ public class GeneticAlgorithm {
 		this.graph = graph;
 	}
 
-	public void run() {
+	public String run() {
 		generatePopulationZero();
 		printPopulationZero();
 
-		Population prevGeneration = populationZero;
+		prevGeneration = populationZero;
 
 		int newBestFitness, stagnationCount = 0;
 		int oldBestFitness = prevGeneration.getBestCandidate().getFitness();
@@ -35,18 +36,11 @@ public class GeneticAlgorithm {
 				break;
 			}
 			System.out.println("\nGENERATION " + i);
-			nextGeneration = new Population(); //?
-
-			selectionInPopulation(prevGeneration);
-//			System.out.println("\nAfter selection:");
-//			nextGeneration.printPopulation();
+			nextGeneration = new Population();
 
 			crossoverInPopulation();
-//			System.out.println("\nAfter crossover:");
-//			nextGeneration.printPopulation();
-
 			mutationInPopulation();
-//			System.out.println("\nAfter mutation:"); //moze popsuc najlepszego?
+			selectionInPopulation(prevGeneration);
 
 			// New population produced
 			nextGeneration.printPopulation();
@@ -58,6 +52,7 @@ public class GeneticAlgorithm {
 			else stagnationCount = 0;
 			oldBestFitness = newBestFitness;
 		}
+		return prevGeneration.getBestCandidate().getDna();
 	}
 
 	public void generatePopulationZero() {
@@ -68,7 +63,7 @@ public class GeneticAlgorithm {
 	/**
 	 * Duels between candidates in population. Population size must always stay even.
 	 */
-	public void selectionInPopulation(Population prevGeneration) {
+	public void selectionInPopulationOLD(Population prevGeneration) {
 		boolean isPopulationEven = false;
 		if (prevGeneration.getPopulationSize() % 2 == 0) isPopulationEven = true;
 		int lastPairIndex = prevGeneration.getPopulationSize() - 1;
@@ -84,6 +79,25 @@ public class GeneticAlgorithm {
 		}
 	}
 
+	public void selectionInPopulation(Population prevGeneration) {
+		while (nextGeneration.getPopulationSize() != Main.POPULATION_SIZE) {
+			int randomIndex1 = threadLocalRandom.nextInt(prevGeneration.getPopulationSize());
+			int randomIndex2 = threadLocalRandom.nextInt(prevGeneration.getPopulationSize());
+			if (randomIndex1 != randomIndex2) {
+				Candidate candidate1 = prevGeneration.getCandidate(randomIndex1);
+				Candidate candidate2 = prevGeneration.getCandidate(randomIndex2);
+				if (candidate1.getFitness() > candidate2.getFitness()) {
+					nextGeneration.addCandidate(candidate1);
+					prevGeneration.removeCandidate(candidate1);
+				}
+				else {
+					nextGeneration.addCandidate(candidate2);
+					prevGeneration.removeCandidate(candidate2);
+				}
+			}
+		}
+	}
+
 	public void printPopulationZero() {
 		System.out.println("\nPopulation Zero:");
 		populationZero.printPopulation();
@@ -94,11 +108,11 @@ public class GeneticAlgorithm {
 	 */
 	public void crossoverInPopulation() {
 		children.clear();
-		for (int i = 0; i < nextGeneration.getPopulationSize() - 2; i += 2) {
+		for (int i = 0; i < prevGeneration.getPopulationSize() - 2; i += 2) {
 			if (threadLocalRandom.nextInt(HUNDRED_PERCENT) <= Main.CROSSOVER_PROBABILITY)
-				crossover(nextGeneration.getCandidate(i).getDna(), nextGeneration.getCandidate(i + 1).getDna());
+				crossover(prevGeneration.getCandidate(i).getDna(), prevGeneration.getCandidate(i + 1).getDna());
 		}
-		nextGeneration.addCandidates(children);
+		prevGeneration.addCandidates(children);
 	}
 
 	/**
@@ -130,13 +144,13 @@ public class GeneticAlgorithm {
 	 * After mutating updating it's oligos and fitness
 	 */
 	private void mutationInPopulation() {
-		for (int i = 0; i < nextGeneration.getPopulationSize(); i++)
+		for (int i = 0; i < prevGeneration.getPopulationSize(); i++)
 			if (threadLocalRandom.nextInt(HUNDRED_PERCENT) <= Main.MUTATION_PROBABILITY) {
-				Candidate candidateToMutate = nextGeneration.getCandidate(i);
+				Candidate candidateToMutate = prevGeneration.getCandidate(i);
 				candidateToMutate.setDna(mutation(candidateToMutate.getDna()));
 				candidateToMutate.setOligosFromDna();
 				candidateToMutate.calculateFitness(oligosOriginalMap);
-				nextGeneration.replaceCandidate(i, candidateToMutate);
+				prevGeneration.replaceCandidate(i, candidateToMutate);
 		}
 	}
 
@@ -156,7 +170,7 @@ public class GeneticAlgorithm {
 	 * If 20 consecutive bestFitness is same method triggers stopping the main loop
 	 */
 	private boolean isStagnation(int count) {
-		if (count > 22) return true;
+		if (count > 35) return true;
 		return false;
 	}
 }
